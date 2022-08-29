@@ -66,24 +66,12 @@ export const filter = (query, products ) => {
   const result = products.filter((product) => {
     const { colorFamily, categoryTags, shopifyProductEu } = product.node
 
-    if (colorsArray) {
-      const productColors = []
-      colorFamily?.forEach((color) => productColors.push(color.name))
-
-      if (!productColors.some((color) => colorsArray.includes(color))) {
-        return false
-      }
-    }
-
-    if (tagsArray && !categoryTags?.some((tag) => tagsArray.includes(tag))) {
-      return false
-    }
-
-    if (pricesArray && !filterByPrice(pricesArray, shopifyProductEu)) {
-      return false
-    }
-
-    return true
+    return !(
+      (colorsArray &&
+        !colorFamily?.some((color) => colorsArray.includes(color.name))) ||
+      (tagsArray && !categoryTags?.some((tag) => tagsArray.includes(tag))) ||
+      (pricesArray && !filterByPrice(pricesArray, shopifyProductEu))
+    )
   })
 
   return result

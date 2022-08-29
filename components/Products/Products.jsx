@@ -8,7 +8,6 @@ import useSWR from "swr"
 import { fetcher } from "../../api"
 
 const step = 16
-const URL = 'http://localhost:3001/data'
 
 export default function Products() {
   const router = useRouter()
@@ -21,19 +20,19 @@ export default function Products() {
   const [productsForRender, setProductsForRender] = useState([])
   const [range, setRange] = useState({from: 0, to: step})
 
-  const { data } = useSWR(URL, fetcher)
+  const { data } = useSWR(process.env.NEXT_PUBLIC_URL, fetcher)
 
   const handlePrevPageClick = () => {
     setRange(prevState => {
-      const result = {
-        from: prevState.from - step,
-        to: prevState.to - step
-      }
-      if (result.from < 0) {
+
+      if (prevState.from === 0) {
         return prevState
       }
 
-      return result
+      return {
+        from: prevState.from - step,
+        to: prevState.to - step
+      }
     })
   }
 
@@ -76,14 +75,10 @@ export default function Products() {
   }, [query])
 
   useEffect(() => {
-    if (data?.allContentfulProductPage.edges) {
-      setFilters(getAllFilters(data?.allContentfulProductPage.edges))
-    }
-  }, [data?.allContentfulProductPage.edges])
-
-  useEffect(() => {
-    if (data?.allContentfulProductPage.edges) {
-      setProductsForRender(filter(query, data?.allContentfulProductPage.edges))
+    const products = data?.allContentfulProductPage.edges
+    if (products) {
+      setProductsForRender(filter(query, products))
+      setFilters(getAllFilters(products))
     }
   }, [data?.allContentfulProductPage.edges, query])
 
@@ -94,9 +89,9 @@ export default function Products() {
           <FilterItem
             title="All"
             onClick={handleAllTagClick}
-            active={query?.tags ? false : true}
+            active={!query?.tags}
           />
-          {filters.tags &&
+          {filters.tags.length > 0 &&
             filters.tags.map((tag, index) => (
               <FilterItem
                 key={index}

@@ -23,7 +23,7 @@ export default function DropdownFilter({ colors}) {
     changeParams(router, { ...query, prices: result.join(',') })
   }
 
-  const handleColorClick = (color) => {
+  const handleColorClick = (color) => () => {
     const result = removeOrAddElemToArray(
       color,
       query.colors ? query.colors.split(',') : []
@@ -63,7 +63,7 @@ export default function DropdownFilter({ colors}) {
                 <FilterItem
                   key={index}
                   title={color}
-                  onClick={() => handleColorClick(color)}
+                  onClick={handleColorClick(color)}
                   active={query?.colors?.split(',').includes(color)}
                 />
               ))}
