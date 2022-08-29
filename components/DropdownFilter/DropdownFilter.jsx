@@ -51,12 +51,7 @@ export default function DropdownFilter({ colors}) {
       {isOpen && (
         <div className="bg-white p-15 w-135 relative mt-7 z-10 flex flex-col items-center">
           <div className="absolute top-5 right-5 flex items-center">
-            <button
-              className="mr-6 text-13.1 font-normal"
-              onClick={handeClearButtonClick}
-            >
-              CLEAR FILTER
-            </button>
+            <button className="mr-6 text-13.1 font-normal" onClick={handeClearButtonClick}>CLEAR FILTER</button>
             <button onClick={() => setIsOpen((prevState) => !prevState)}>
               <Cross />
             </button>
