@@ -8,6 +8,7 @@ import useSWR from "swr"
 import { fetcher } from "../../api"
 
 const step = 16
+const initialRange = { from: 0, to: step }
 
 export default function Products() {
   const router = useRouter()
@@ -18,7 +19,7 @@ export default function Products() {
     prices: [],
   })
   const [productsForRender, setProductsForRender] = useState([])
-  const [range, setRange] = useState({from: 0, to: step})
+  const [range, setRange] = useState(initialRange)
 
   const { data } = useSWR(process.env.NEXT_PUBLIC_URL, fetcher)
 
@@ -50,6 +51,13 @@ export default function Products() {
     })
   }
 
+  const setFirstPage = () => {
+    if (range.from === 0) {
+      return
+    }
+    setRange(initialRange)
+  }
+
   const handleTagClick = (tag) => {
     const result = removeOrAddElemToArray(
       tag,
@@ -63,22 +71,26 @@ export default function Products() {
     }
 
     changeParams(router, { ...query, tags: result.join(',') })
+    setFirstPage()
   }
 
   const handleAllTagClick = () => {
     delete query.tags
     changeParams(router, query)
+    setFirstPage()
   }
 
   useEffect(() => {
-    setRange({from: 0, to: step})
-  }, [query])
+    const product = data?.allContentfulProductPage.edges
+    if (product) {
+      setFilters(getAllFilters(product))
+    }
+  }, [data?.allContentfulProductPage.edges])
 
   useEffect(() => {
-    const products = data?.allContentfulProductPage.edges
-    if (products) {
-      setProductsForRender(filter(query, products))
-      setFilters(getAllFilters(products))
+    const product = data?.allContentfulProductPage.edges
+    if (product) {
+      setProductsForRender(filter(query, product))
     }
   }, [data?.allContentfulProductPage.edges, query])
 
@@ -101,7 +113,7 @@ export default function Products() {
               />
             ))}
         </div>
-        <DropdownFilter colors={filters.colors} />
+        <DropdownFilter colors={filters.colors} setFirstPage={setFirstPage} />
       </div>
       <div className="grid grid-cols-4 gap-x-15.75 gap-y-10.25 mb-9">
         {productsForRender.length > 0 &&

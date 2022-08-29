@@ -63,18 +63,27 @@ export const filter = (query, products ) => {
     }
   })
 
-  const result = products.filter((product) => {
+  return products.filter((product) => {
     const { colorFamily, categoryTags, shopifyProductEu } = product.node
 
-    return !(
-      (colorsArray &&
-        !colorFamily?.some((color) => colorsArray.includes(color.name))) ||
-      (tagsArray && !categoryTags?.some((tag) => tagsArray.includes(tag))) ||
-      (pricesArray && !filterByPrice(pricesArray, shopifyProductEu))
-    )
-  })
+    if (colorsArray && !checkColorsIncludes(colorsArray, colorFamily)) {
+      return false
+    }
 
-  return result
+    if (tagsArray && !checkTagsIncludes(tagsArray, categoryTags)) {
+      return false
+    }
+
+    return !(pricesArray && !filterByPrice(pricesArray, shopifyProductEu))
+  })
+}
+
+const checkTagsIncludes = (tagsArray, productTags) => {
+  return productTags?.some((tag) => tagsArray.includes(tag))
+}
+
+const checkColorsIncludes = (colorsArray, productColors) => {
+  return productColors?.some((color) => colorsArray.includes(color.name))
 }
 
 const filterByPrice = (pricesArray, productPrice) => {

@@ -4,7 +4,7 @@ import Cross from "../../icons/Cross";
 import { changeParams, removeOrAddElemToArray } from "../../utils";
 import FilterItem from "../FilterItem/FilterItem";
 
-export default function DropdownFilter({ colors}) {
+export default function DropdownFilter({ colors, setFirstPage}) {
   const router = useRouter()
   const { query } = router
   const [isOpen, setIsOpen] = useState(false)
@@ -21,6 +21,7 @@ export default function DropdownFilter({ colors}) {
       return
     }
     changeParams(router, { ...query, prices: result.join(',') })
+    setFirstPage()
   }
 
   const handleColorClick = (color) => () => {
@@ -35,12 +36,14 @@ export default function DropdownFilter({ colors}) {
       return
     }
     changeParams(router, { ...query, colors: result.join(',') })
+    setFirstPage()
   }
 
   const handeClearButtonClick = () => {
     delete query.colors
     delete query.prices
     changeParams(router, query)
+    setFirstPage()
   }
 
   return (
@@ -57,7 +60,7 @@ export default function DropdownFilter({ colors}) {
             </button>
           </div>
           <p className="mb-3 text-13.1">COLOUR</p>
-          {colors && (
+          {colors.length > 0 && (
             <div className="grid grid-cols-5 gap-3">
               {colors.map((color, index) => (
                 <FilterItem
