@@ -12,7 +12,7 @@ const initialRange = { from: 0, to: step }
 
 export default function Products() {
   const router = useRouter()
-  const { query } = router
+  const { query } = router || { query: null }
   const [filters, setFilters] = useState({
     tags: [],
     colors: [],
@@ -75,7 +75,9 @@ export default function Products() {
   }
 
   const handleAllTagClick = () => {
-    delete query.tags
+    if (query?.tags) {
+      delete query.tags
+    }
     changeParams(router, query)
     setFirstPage()
   }
@@ -95,9 +97,12 @@ export default function Products() {
   }, [data?.allContentfulProductPage.edges, query])
 
   return (
-    <div className="bg-white-light px-15 pt-20 pb-20 min-h-screen">
+    <div
+      className="bg-white-light px-15 pt-20 pb-20 min-h-screen"
+      data-testid="products"
+    >
       <div className="relative pl-50 pr-50">
-        <div className="grid grid-cols-7 gap-2 mb-20">
+        <div className="grid grid-cols-7 gap-2 mb-20" data-testid="tags-list">
           <FilterItem
             title="All"
             onClick={handleAllTagClick}
@@ -115,7 +120,10 @@ export default function Products() {
         </div>
         <DropdownFilter colors={filters.colors} setFirstPage={setFirstPage} />
       </div>
-      <div className="grid grid-cols-4 gap-x-15.75 gap-y-10.25 mb-9">
+      <div
+        className="grid grid-cols-4 gap-x-15.75 gap-y-10.25 mb-9"
+        data-testid="products-list"
+      >
         {productsForRender.length > 0 &&
           productsForRender
             .slice(range.from, range.to)
@@ -128,6 +136,7 @@ export default function Products() {
           disabled={range.from === 0}
           onClick={handlePrevPageClick}
           className="mr-3 w-6 h-6 flex items-center justify-center rounded-full bg-white"
+          data-testid="prev-button"
         >
           &lt;
         </button>
@@ -135,6 +144,7 @@ export default function Products() {
           disabled={range.to >= productsForRender.length}
           onClick={handleNextPageClick}
           className="w-6 h-6 flex items-center justify-center rounded-full bg-white"
+          data-testid="next-button"
         >
           &gt;
         </button>

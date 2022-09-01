@@ -4,9 +4,9 @@ import Cross from "../../icons/Cross";
 import { changeParams, removeOrAddElemToArray } from "../../utils";
 import FilterItem from "../FilterItem/FilterItem";
 
-export default function DropdownFilter({ colors, setFirstPage}) {
+export default function DropdownFilter({ colors = [], setFirstPage}) {
   const router = useRouter()
-  const { query } = router
+  const { query } = router || { query: null }
   const [isOpen, setIsOpen] = useState(false)
 
   const handleInputChange = (e) => {
@@ -47,12 +47,12 @@ export default function DropdownFilter({ colors, setFirstPage}) {
   }
 
   return (
-    <div className="absolute top-0 right-0 flex flex-col items-end">
-      <button onClick={() => setIsOpen((prevState) => !prevState)}>
+    <div className="absolute top-0 right-0 flex flex-col items-end" data-testid="filter">
+      <button onClick={() => setIsOpen((prevState) => !prevState)} data-testid="filter-button">
         FILTERS
       </button>
       {isOpen && (
-        <div className="bg-white p-15 w-135 relative mt-7 z-10 flex flex-col items-center">
+        <div className="bg-white p-15 w-135 relative mt-7 z-10 flex flex-col items-center" data-testid="dropdown">
           <div className="absolute top-5 right-5 flex items-center">
             <button className="mr-6 text-13.1 font-normal" onClick={handeClearButtonClick}>CLEAR FILTER</button>
             <button onClick={() => setIsOpen((prevState) => !prevState)}>

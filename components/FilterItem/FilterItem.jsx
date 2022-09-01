@@ -1,5 +1,3 @@
-import { useEffect } from "react"
-
 export default function FilterItem({ title, active, onClick }) {
   return (
     <div
@@ -7,6 +5,7 @@ export default function FilterItem({ title, active, onClick }) {
         active ? 'bg-gray-400' : ''
       }`}
       onClick={onClick}
+      data-testid='filter-item'
     >
       {title}
     </div>

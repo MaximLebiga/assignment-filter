@@ -36,7 +36,7 @@ export const getAllFilters = (products) => {
 }
 
 export const changeParams = (router, params) => {
-  router.push(
+  router?.push(
     {
       query: params
     },
